@@ -13,16 +13,16 @@ public class TileBlocker : Tile
 			transform.name = customData;
 	}
 
-	protected override void OnCollisionEnter (Collision collision)
-	{
-		base.OnCollisionEnter (collision);
+	//protected override void OnCollisionEnter (Collision collision)
+	//{
+	//	base.OnCollisionEnter (collision);
 
-		if(collision.gameObject.name.Equals("PfTileFireball"))
-		{
-			Animator mAnimator = transform.GetComponent<Animator>();
-			mAnimator.SetInteger("animstate",1);
+	//	if(collision.gameObject.name.Equals("PfTileFireball"))
+	//	{
+	//		Animator mAnimator = transform.GetComponent<Animator>();
+	//		mAnimator.SetInteger("animstate",1);
 
-			mAudioSource.Play();
-		}
-	}
+	//		mAudioSource.Play();
+	//	}
+	//}
 }

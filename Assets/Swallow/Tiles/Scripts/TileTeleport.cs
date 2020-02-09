@@ -31,7 +31,7 @@ public class TileTeleport : Tile
 		
 		if(!string.IsNullOrEmpty(_CustomData))
 		{
-			Transform teleportObject = transform.parent.FindChild(mSearchForTeleport);
+			Transform teleportObject = transform.parent.Find(mSearchForTeleport);
 			mTeleportToTile = teleportObject.GetComponent<Tile>();
 		}
 	}

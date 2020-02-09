@@ -22,7 +22,7 @@ namespace UUEX.UI
 			mDropDown = GetComponent<Dropdown> ();
 			mDropDown.onValueChanged.AddListener (DropdownValueChanged);
 
-			Transform arrowTransform = transform.FindChild("Arrow");
+			Transform arrowTransform = transform.Find("Arrow");
 			if(arrowTransform != null)
 				mArrow = arrowTransform.GetComponent<Image>();
 		}

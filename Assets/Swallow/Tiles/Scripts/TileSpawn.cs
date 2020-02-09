@@ -29,7 +29,7 @@ public class TileSpawn : Tile
 
 		if(!string.IsNullOrEmpty(_CustomData))
 		{
-			mSpawnObject = transform.parent.FindChild(_CustomData);
+			mSpawnObject = transform.parent.Find(_CustomData);
 			mSpawnObject.gameObject.SetActive(false);
 		}
 	}
