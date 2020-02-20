@@ -137,10 +137,10 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        registerSigninUI.SetActive(false);
-        CreateLevel();
-        particles.gameObject.SetActive(false);
-        gameUI.gameObject.SetActive(true);
-        gameUI.StartTimer();
-    }
+		registerSigninUI.SetActive(false);
+		CreateLevel();
+		particles.gameObject.SetActive(false);
+		gameUI.gameObject.SetActive(true);
+		gameUI.StartTimer();
+	}
 }
