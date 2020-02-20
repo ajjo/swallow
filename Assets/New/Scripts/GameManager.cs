@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
 	private TileFireball fireball;
     private bool nextLevel;
 
+    public GameObject registerSigninUI;
+    public Transform particles;
+
 	// Start is called before the first frame update
 	void Start()
     {
@@ -124,9 +127,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void LoginOrRegister()
     {
         introUI.SetActive(false);
-		CreateLevel();
+        registerSigninUI.SetActive(true);
+    }
+
+    public void StartGame()
+    {
+        registerSigninUI.SetActive(false);
+        CreateLevel();
+        particles.gameObject.SetActive(false);
     }
 }
