@@ -24,14 +24,38 @@ public class PlayFabManager
         }
     }
 
-    public void Login(string username, string password)
+    public void Register(string username, string password, System.Action<bool> callback)
+    {
+        RegisterPlayFabUserRequest req = new RegisterPlayFabUserRequest();
+        req.Username = username;
+        req.Password = password;
+        req.TitleId = PlayFabSettings.TitleId;
+        req.RequireBothUsernameAndEmail = false;
+
+        PlayFabClientAPI.RegisterPlayFabUser(req, (register) => { callback(true);  }, (error) => { callback(false); });
+
+        //PlayFabClientAPI.RegisterPlayFabUser(req, OnRegisterSuccess, OnRegisterFailure);
+    }
+
+    private void OnRegisterSuccess(RegisterPlayFabUserResult register)
+    {
+        Debug.Log("Register succeeeded");
+        playFabId = register.PlayFabId;
+    }
+
+    private void OnRegisterFailure(PlayFabError error)
+    {
+        Debug.Log("Register failed = " + error.ErrorMessage);
+    }
+
+    public void Login(string username, string password, System.Action<bool> callback)
     {
 
         LoginWithPlayFabRequest req = new LoginWithPlayFabRequest();
         req.Username = username;
         req.Password = password;
         req.TitleId = PlayFabSettings.TitleId;
-        PlayFabClientAPI.LoginWithPlayFab(req, OnLoginSuccess, OnLoginFailure);
+        PlayFabClientAPI.LoginWithPlayFab(req, (login) => { callback(true); }, (error) => { callback(false); });
     }
 
     private void OnLoginSuccess(LoginResult login)
@@ -43,6 +67,6 @@ public class PlayFabManager
 
     private void OnLoginFailure(PlayFabError error)
     {
-        Debug.Log("Login failed");
+        Debug.Log("Login failed = " + error.ErrorMessage);
     }
 }
