@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private bool nextLevel;
 
     public GameObject registerSigninUI;
+    public GameUI gameUI;
     public Transform particles;
 
 	// Start is called before the first frame update
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
             currentLevel++;
             Destroy(currentLevelGameObject);
             CreateLevel();
+            gameUI.AddScore();
         }
     }
 
@@ -138,5 +140,7 @@ public class GameManager : MonoBehaviour
         registerSigninUI.SetActive(false);
         CreateLevel();
         particles.gameObject.SetActive(false);
+        gameUI.gameObject.SetActive(true);
+        gameUI.StartTimer();
     }
 }
