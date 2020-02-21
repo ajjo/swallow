@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private bool nextLevel;
 
     public RegisterSignin registerSigninUI;
+    public LevelsUI levelUI;
     public GameUI gameUI;
     public Transform particles;
     private bool gameStarted = false;
@@ -146,7 +147,7 @@ public class GameManager : MonoBehaviour
 
     public void LoginOrRegister()
     {
-        if (false && registerSigninUI.canLogin())
+        if (registerSigninUI.canLogin())
         {
             registerSigninUI.Login();
         }
@@ -157,13 +158,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void ShowLevel()
+    {
+        registerSigninUI.gameObject.SetActive(false);
+        levelUI.gameObject.SetActive(true);
+        particles.gameObject.SetActive(false);
+        introUI.SetActive(false);
+    }
+
+    public void Play()
     {
         gameStarted = true;
         registerSigninUI.gameObject.SetActive(false);
-		CreateLevel();
-		particles.gameObject.SetActive(false);
-		gameUI.gameObject.SetActive(true);
-		gameUI.StartTimer();
+        CreateLevel();
+        particles.gameObject.SetActive(false);
+        gameUI.gameObject.SetActive(true);
+        gameUI.StartTimer();
+    }
+
+    public void StartGame()
+    {
+        ShowLevel();
 	}
 }
