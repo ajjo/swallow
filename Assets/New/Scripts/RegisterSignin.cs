@@ -8,13 +8,33 @@ public class RegisterSignin : MonoBehaviour
     public Text username;
     public Text password;
     public GameManager gameManager;
+    public Toggle save;
 
     public void Login()
     {
-        if(!string.IsNullOrEmpty(username.text) && username.text.Length > 4 && !string.IsNullOrEmpty(password.text) && password.text.Length > 4)
+        string un = username.text;
+        string pwd = password.text;
+
+        // Get the username and password from player prefs
+        if (PlayerPrefs.HasKey("SAVED_INFO"))
+        {
+            string creds = PlayerPrefs.GetString("SAVED_INFO");
+            string [] c = creds.Split(':');
+            un = c[0];
+            pwd = c[1];
+        }
+
+        if(un.Length > 4 && pwd.Length > 4)
         {
             Debug.Log("Attempting to login");
-            PlayFabManager.instance.Login(username.text, password.text, LoginStatus);
+            PlayFabManager.instance.Login(un, pwd, LoginStatus);
+        }
+
+        // Save player prefs
+        if(save.isOn && !PlayerPrefs.HasKey("SAVED_INFO"))
+        {
+            string info = un + ":" + pwd;
+            PlayerPrefs.SetString("SAVED_INFO", info);
         }
     }
 
@@ -25,7 +45,6 @@ public class RegisterSignin : MonoBehaviour
             gameManager.StartGame();
         }
     }
-
 
     public void Register()
     {
