@@ -15,9 +15,12 @@ public class GameManager : MonoBehaviour
 	private TileFireball fireball;
     private bool nextLevel;
 
-    public GameObject registerSigninUI;
+    public RegisterSignin registerSigninUI;
     public GameUI gameUI;
     public Transform particles;
+    private bool gameStarted = false;
+
+    public GameOverUI gameOverUI = null;
 
 	// Start is called before the first frame update
 	void Start()
@@ -36,6 +39,9 @@ public class GameManager : MonoBehaviour
 
     public void Swipe(Vector3 direction,float x,float y)
     {
+        if (!gameStarted)
+            return;
+
         Vector3 origin = fireball.transform.position;
         RaycastHit info;
         bool hit = Physics.Raycast(origin, direction, out info);
@@ -52,13 +58,22 @@ public class GameManager : MonoBehaviour
 
     void NextLevel()
     {
-        if (nextLevel)
+        Debug.Log("NL");
+        if (nextLevel && currentLevel < _Levels.Length)
         {
             fireball.nextEvent.RemoveAllListeners();
             currentLevel++;
             Destroy(currentLevelGameObject);
             CreateLevel();
             gameUI.AddScore();
+        }
+
+        if(currentLevel >= _Levels.Length)
+        {
+            Destroy(currentLevelGameObject);
+            gameUI.AddScore();
+            Debug.Log("Finished");
+            gameOverUI.gameObject.SetActive(true);
         }
     }
 
@@ -113,7 +128,7 @@ public class GameManager : MonoBehaviour
                 fireball = fb;
                 fireball.nextEvent.AddListener(NextLevel);
             }
-            }
+        }
 
         // Set the custom data .. we need a for loop here to make sure all gameobjects have been initialized
         foreach (LevelData.LevelInfo levelInfo in levelData._LevelInfo)
@@ -131,13 +146,21 @@ public class GameManager : MonoBehaviour
 
     public void LoginOrRegister()
     {
-        introUI.SetActive(false);
-        registerSigninUI.SetActive(true);
+        if (false && registerSigninUI.canLogin())
+        {
+            registerSigninUI.Login();
+        }
+        else
+        {
+            introUI.SetActive(false);
+            registerSigninUI.gameObject.SetActive(true);
+        }
     }
 
     public void StartGame()
     {
-		registerSigninUI.SetActive(false);
+        gameStarted = true;
+        registerSigninUI.gameObject.SetActive(false);
 		CreateLevel();
 		particles.gameObject.SetActive(false);
 		gameUI.gameObject.SetActive(true);

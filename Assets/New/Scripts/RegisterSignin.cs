@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class RegisterSignin : MonoBehaviour
 {
@@ -9,6 +11,12 @@ public class RegisterSignin : MonoBehaviour
     public Text password;
     public GameManager gameManager;
     public Toggle save;
+    public Text error;
+
+    public bool canLogin()
+    {
+        return PlayerPrefs.HasKey("SAVED_INFO");
+    }
 
     public void Login()
     {
@@ -16,7 +24,7 @@ public class RegisterSignin : MonoBehaviour
         string pwd = password.text;
 
         // Get the username and password from player prefs
-        if (PlayerPrefs.HasKey("SAVED_INFO"))
+        if (canLogin())
         {
             string creds = PlayerPrefs.GetString("SAVED_INFO");
             string [] c = creds.Split(':');
@@ -31,18 +39,29 @@ public class RegisterSignin : MonoBehaviour
         }
 
         // Save player prefs
-        if(save.isOn && !PlayerPrefs.HasKey("SAVED_INFO"))
+        if(save.isOn && !canLogin())
         {
             string info = un + ":" + pwd;
             PlayerPrefs.SetString("SAVED_INFO", info);
         }
     }
 
-    private void LoginStatus(bool status)
+    public void ChangeSaveStatus(bool isOn)
+    {
+        Debug.Log("ISOn  = " + isOn.ToString());
+        save.isOn = isOn;
+    }
+
+    private void LoginStatus(bool status, System.Object obj)
     {
         if(status)
         {
+            LoginResult lg = (LoginResult)obj;              
             gameManager.StartGame();
+        } else
+        {
+            PlayFabError err = (PlayFabError)obj;
+            error.text = err.ErrorMessage;
         }
     }
 
@@ -55,12 +74,16 @@ public class RegisterSignin : MonoBehaviour
         }
     }
 
-
-    private void RegisterStatus(bool status)
+    private void RegisterStatus(bool status, System.Object obj)
     {
         if (status)
         {
+            RegisterPlayFabUserResult result = (RegisterPlayFabUserResult)obj;
             gameManager.StartGame();
+        } else
+        {
+            PlayFabError err = (PlayFabError)obj;
+            error.text = err.ErrorMessage;
         }
     }
 }

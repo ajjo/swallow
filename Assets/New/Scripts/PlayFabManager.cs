@@ -24,7 +24,7 @@ public class PlayFabManager
         }
     }
 
-    public void Register(string username, string password, System.Action<bool> callback)
+    public void Register(string username, string password, System.Action<bool,object> callback)
     {
         RegisterPlayFabUserRequest req = new RegisterPlayFabUserRequest();
         req.Username = username;
@@ -32,7 +32,7 @@ public class PlayFabManager
         req.TitleId = PlayFabSettings.TitleId;
         req.RequireBothUsernameAndEmail = false;
 
-        PlayFabClientAPI.RegisterPlayFabUser(req, (register) => { callback(true);  }, (error) => { callback(false); });
+        PlayFabClientAPI.RegisterPlayFabUser(req, (register) => { callback(true, register); }, (error) => { callback(false, error); });
 
         //PlayFabClientAPI.RegisterPlayFabUser(req, OnRegisterSuccess, OnRegisterFailure);
     }
@@ -48,14 +48,13 @@ public class PlayFabManager
         Debug.Log("Register failed = " + error.ErrorMessage);
     }
 
-    public void Login(string username, string password, System.Action<bool> callback)
+    public void Login(string username, string password, System.Action<bool,object> callback)
     {
-
         LoginWithPlayFabRequest req = new LoginWithPlayFabRequest();
         req.Username = username;
         req.Password = password;
         req.TitleId = PlayFabSettings.TitleId;
-        PlayFabClientAPI.LoginWithPlayFab(req, (login) => { callback(true); }, (error) => { callback(false); });
+        PlayFabClientAPI.LoginWithPlayFab(req, (login) => { callback(true,login); }, (error) => { callback(false,error); });
     }
 
     private void OnLoginSuccess(LoginResult login)
