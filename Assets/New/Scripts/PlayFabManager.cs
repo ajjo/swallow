@@ -24,6 +24,57 @@ public class PlayFabManager
         }
     }
 
+    public void GetLevelsInfo(System.Action<object, int []> callback)
+    {
+        GetUserDataRequest req = new GetUserDataRequest();
+        req.PlayFabId = playFabId;
+
+        int[] li = new int[20];
+        for (int i = 0; i < li.Length; i++)
+            li[i] = -1;
+
+        PlayFabClientAPI.GetUserData(req, (userDataResult) =>
+        {
+            Debug.Log("Got the result");
+            if (userDataResult.Data != null && userDataResult.Data.ContainsKey("Level"))
+            {
+                UserDataRecord udr;
+                userDataResult.Data.TryGetValue("Level", out udr);
+                string[] d = udr.Value.ToString().Split(':');
+                Debug.Log("Finished = " + d.Length);
+                for (int i = 0; i < li.Length; i++)
+                {
+                    Debug.Log("I = " + i.ToString());
+                    li[i] = int.Parse(d[i]);
+                }
+            }
+            callback(userDataResult, li);
+        }, (error) =>
+        {
+            Debug.Log("Errror " + error);
+            callback(error, li);
+        });
+    }
+
+    public void SetLevelInfo(int [] levels)
+    {
+        UpdateUserDataRequest req = new UpdateUserDataRequest();
+        req.Data = new Dictionary<string, string>();
+        string levelInfo = "";
+        for(int i=0;i<levels.Length;i++)
+        {
+            levelInfo += levels[i].ToString() + ":";
+        }
+        Debug.Log("LevelInfo " + levelInfo);
+        req.Data.Add("Level", levelInfo);
+
+        PlayFabClientAPI.UpdateUserData(req, (userDataResult) => {
+             Debug.Log("Finishes the result");
+        }, (error) => {
+             Debug.Log("Error " + error.ErrorMessage);
+        });
+    }
+
     public void Register(string username, string password, System.Action<bool,object> callback)
     {
         RegisterPlayFabUserRequest req = new RegisterPlayFabUserRequest();

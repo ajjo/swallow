@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public GameObject introUI;
     public Transform[] _Levels;
 	public InputManager inputManager;
+    public LevelCompleteUI levelCompleteUI;
 
     private float time;
     private GameObject currentLevelGameObject;
@@ -22,6 +23,9 @@ public class GameManager : MonoBehaviour
     private bool gameStarted = false;
 
     public GameOverUI gameOverUI = null;
+
+    // number of levels
+    private int[] levels = new int[20];
 
 	// Start is called before the first frame update
 	void Start()
@@ -57,16 +61,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void NextLevel()
+    void LevelFinished()
     {
         Debug.Log("NL");
         if (nextLevel && currentLevel < _Levels.Length)
         {
-            fireball.nextEvent.RemoveAllListeners();
-            currentLevel++;
-            Destroy(currentLevelGameObject);
-            CreateLevel();
-            gameUI.AddScore();
+            // Hard coded to 3
+            levels[currentLevel-1] = 3;
+            PlayFabManager.instance.SetLevelInfo(levels);
+
+            levelCompleteUI.gameObject.SetActive(true);
         }
 
         if(currentLevel >= _Levels.Length)
@@ -76,6 +80,15 @@ public class GameManager : MonoBehaviour
             Debug.Log("Finished");
             gameOverUI.gameObject.SetActive(true);
         }
+    }
+
+    void NextLevel()
+    {
+        fireball.nextEvent.RemoveAllListeners();
+        currentLevel++;
+        Destroy(currentLevelGameObject);
+        CreateLevel();
+        gameUI.AddScore();
     }
 
     void SwipeUp()
@@ -127,7 +140,7 @@ public class GameManager : MonoBehaviour
             if (fb != null)
             {
                 fireball = fb;
-                fireball.nextEvent.AddListener(NextLevel);
+                fireball.nextEvent.AddListener(LevelFinished);
             }
         }
 
@@ -178,6 +191,13 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        ShowLevel();
+        // Wait until you show the levels...
+        PlayFabManager.instance.GetLevelsInfo(DisplayLevel);
 	}
+
+    private void DisplayLevel(object obj, int [] levels)
+    {
+        levelUI.Init(levels);
+        ShowLevel();
+    }
 }
