@@ -7,6 +7,7 @@ public class TileBomb : Tile
 {
 	public int _SelfDestructDuration = 5;
 	public AudioClip _Tick = null;
+    public TMPro.TextMeshPro textMeshPro;
 
 	private float mTime = 0;
 	private Renderer mRenderer = null;
@@ -59,12 +60,17 @@ public class TileBomb : Tile
 		{
 			//gameObject.SetActive(false);
 			mRenderer.enabled = false;
+            textMeshPro.enabled = false;
 			mAudioSource.Play();
 			mBombCount--;
 
 			if(mBombCount == 0)
 				GameObject.Destroy(mTickingAudioSource.gameObject);
-		}
+		} else
+        {
+            float remaining = _SelfDestructDuration - elapsedTime;
+            textMeshPro.SetText(remaining.ToString("0"));
+        }
 	}
 
 	void OnDisable()

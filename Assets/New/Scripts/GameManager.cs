@@ -34,12 +34,23 @@ public class GameManager : MonoBehaviour
 		inputManager.OnSwipeRight.AddListener(SwipeRight);
 		inputManager.OnSwipeUp.AddListener(SwipeUp);
 		inputManager.OnSwipeDown.AddListener(SwipeDown);
+
+        gameUI.timerEvent.AddListener(LevelFinished);
 	}
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void Retry()
+    {
+        Debug.Log("Doing the retry");
+        Destroy(currentLevelGameObject);
+        CreateLevel();
+        levelCompleteUI.gameObject.SetActive(false);
+        gameUI.StartTimer();
     }
 
     public void Swipe(Vector3 direction,float x,float y)
@@ -61,16 +72,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void LevelFinished()
+    void LevelFinished(bool outOfTime = false)
     {
-        Debug.Log("NL");
-        if (nextLevel && currentLevel < _Levels.Length)
+        Debug.Log("NL" + nextLevel + " : " + currentLevel);
+        if ((outOfTime || nextLevel) && currentLevel < _Levels.Length)
         {
             // Hard coded to 3
             levels[currentLevel-1] = 3;
             PlayFabManager.instance.SetLevelInfo(levels);
 
-            levelCompleteUI.gameObject.SetActive(true);
+            levelCompleteUI.Show(outOfTime);
         }
 
         if(currentLevel >= _Levels.Length)
@@ -199,6 +210,7 @@ public class GameManager : MonoBehaviour
     private void DisplayLevel(object obj, int [] levels)
     {
         levelUI.Init(levels);
+        this.levels = levels;
         ShowLevel();
     }
 }

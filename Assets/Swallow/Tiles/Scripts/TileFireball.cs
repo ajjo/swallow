@@ -9,7 +9,7 @@ public class TileFireball : Tile
     float t;
     bool animate = false;
     public float lerpDuration = 2.0f;
-    public UnityEvent nextEvent;
+    public UnityBoolEvent nextEvent = new UnityBoolEvent();
 
     public void MoveTo(Vector3 pos)
     {
@@ -30,7 +30,7 @@ public class TileFireball : Tile
                 t = lerpDuration;
                 animate = false;
 
-                nextEvent.Invoke();
+                nextEvent.Invoke(false);
             }
             Vector3 p = Vector3.Lerp(startPos, lerpToPos, t / lerpDuration);
             transform.position = p;

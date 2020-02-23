@@ -35,16 +35,16 @@ public class PlayFabManager
 
         PlayFabClientAPI.GetUserData(req, (userDataResult) =>
         {
-            Debug.Log("Got the result");
+            //Debug.Log("Got the result");
             if (userDataResult.Data != null && userDataResult.Data.ContainsKey("Level"))
             {
                 UserDataRecord udr;
                 userDataResult.Data.TryGetValue("Level", out udr);
                 string[] d = udr.Value.ToString().Split(':');
-                Debug.Log("Finished = " + d.Length);
+                //Debug.Log("Finished = " + d.Length);
                 for (int i = 0; i < li.Length; i++)
                 {
-                    Debug.Log("I = " + i.ToString());
+                    //Debug.Log("I = " + i.ToString());
                     li[i] = int.Parse(d[i]);
                 }
             }
