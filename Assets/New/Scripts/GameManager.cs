@@ -179,10 +179,11 @@ public class GameManager : MonoBehaviour
         introUI.SetActive(false);
     }
 
-    public void Play()
+    public void Play(int level)
     {
         gameStarted = true;
         registerSigninUI.gameObject.SetActive(false);
+        currentLevel = level;
         CreateLevel();
         particles.gameObject.SetActive(false);
         gameUI.gameObject.SetActive(true);
