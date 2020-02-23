@@ -40,6 +40,6 @@ public class LevelCompleteUI : MonoBehaviour
 
     public void QuitLevel()
     {
-        
+        gameManager.GotoHome();
     }
 }

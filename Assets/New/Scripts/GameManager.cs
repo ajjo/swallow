@@ -126,6 +126,14 @@ public class GameManager : MonoBehaviour
         Swipe(Vector3.left, 1.0f, 0.0f);
     }
 
+    public void GotoHome()
+    {
+        introUI.SetActive(true);
+        gameUI.gameObject.SetActive(false);
+        levelCompleteUI.gameObject.SetActive(false);
+        Destroy(currentLevelGameObject);
+    }
+
     void CreateLevel()
     {
         time = Time.realtimeSinceStartup;
