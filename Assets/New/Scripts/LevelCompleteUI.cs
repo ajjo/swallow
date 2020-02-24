@@ -31,6 +31,7 @@ public class LevelCompleteUI : MonoBehaviour
 
         Text buttonText = levelButton.GetComponentInChildren<Text>();
         buttonText.text = "Play Again";
+        gameManager.LevelOver();
     }
 
     public void PlayAgain()

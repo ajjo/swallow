@@ -53,6 +53,11 @@ public class GameUI : MonoBehaviour
         start = true;
     }
 
+    public void StopTimer()
+    {
+        start = false;
+    }
+
     public void LoseLife()
     {
         numLives -= 1;

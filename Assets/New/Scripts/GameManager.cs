@@ -47,10 +47,17 @@ public class GameManager : MonoBehaviour
     public void Retry()
     {
         Debug.Log("Doing the retry");
+        gameStarted = true;
         Destroy(currentLevelGameObject);
         CreateLevel();
         levelCompleteUI.gameObject.SetActive(false);
         gameUI.StartTimer();
+    }
+
+    public void LevelOver()
+    {
+        gameStarted = false;
+        gameUI.StopTimer();
     }
 
     public void Swipe(Vector3 direction,float x,float y)
@@ -74,6 +81,9 @@ public class GameManager : MonoBehaviour
 
     void LevelFinished(bool outOfTime = false)
     {
+        if (!gameStarted)
+            return;
+
         Debug.Log("NL" + nextLevel + " : " + currentLevel);
         if ((outOfTime || nextLevel) && currentLevel < _Levels.Length)
         {
@@ -137,6 +147,10 @@ public class GameManager : MonoBehaviour
     void CreateLevel()
     {
         time = Time.realtimeSinceStartup;
+        Debug.Log("Creeating level");
+
+        if (currentLevelGameObject)
+            GameObject.Destroy(currentLevelGameObject);
 
         currentLevelGameObject = new GameObject("CurrentLevel");
         LevelData levelData = _Levels[currentLevel - 1].GetComponent<LevelData>();
