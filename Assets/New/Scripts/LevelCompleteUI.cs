@@ -30,13 +30,17 @@ public class LevelCompleteUI : MonoBehaviour
         gameObject.SetActive(true);
 
         Text buttonText = levelButton.GetComponentInChildren<Text>();
-        buttonText.text = "Play Again";
+        buttonText.text = outOfTime ? "Play Again" : "Next Level";
         gameManager.LevelOver();
     }
 
     public void PlayAgain()
     {
-        gameManager.Retry();
+        Text buttonText = levelButton.GetComponentInChildren<Text>();
+        if (buttonText.text == "Play Again")
+            gameManager.Retry();
+        else
+            gameManager.NextLevel();
     }
 
     public void QuitLevel()

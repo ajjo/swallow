@@ -103,8 +103,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void NextLevel()
+    public void NextLevel()
     {
+        gameUI.StartTimer();
+        gameStarted = true;
+        levelCompleteUI.gameObject.SetActive(false);
         fireball.nextEvent.RemoveAllListeners();
         currentLevel++;
         Destroy(currentLevelGameObject);
