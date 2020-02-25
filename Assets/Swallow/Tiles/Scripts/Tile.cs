@@ -9,6 +9,8 @@ public class Tile : MonoBehaviour
 	protected TextMesh mText = null;
 	protected AudioSource mAudioSource = null;
 
+    protected bool isDone = false;
+
 	[System.NonSerialized]
 	public int _X;
 	[System.NonSerialized]
@@ -33,6 +35,11 @@ public class Tile : MonoBehaviour
 	public virtual void UpdateCustomData()
 	{
 	}
+
+    public virtual void LevelComplete()
+    {
+        isDone = true;
+    }
 
 	public bool IsStationary()
 	{

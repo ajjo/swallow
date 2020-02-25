@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public GameUI gameUI;
     public Transform particles;
     private bool gameStarted = false;
+    public bool devMode = false;
 
     public GameOverUI gameOverUI = null;
 
@@ -87,16 +88,23 @@ public class GameManager : MonoBehaviour
         Debug.Log("NL" + nextLevel + " : " + currentLevel);
         if ((outOfTime || nextLevel) && currentLevel < _Levels.Length)
         {
+            ClearLevel();
             // Hard coded to 3
             levels[currentLevel-1] = 3;
-            PlayFabManager.instance.SetLevelInfo(levels);
+            if(!devMode)
+                PlayFabManager.instance.SetLevelInfo(levels);
 
             levelCompleteUI.Show(outOfTime);
+            Tile[] tiles = currentLevelGameObject.GetComponentsInChildren<Tile>();
+            foreach (Tile t in tiles)
+            {
+                t.LevelComplete();
+            }
         }
 
         if(currentLevel >= _Levels.Length)
         {
-            Destroy(currentLevelGameObject);
+            ClearLevel();
             gameUI.AddScore();
             Debug.Log("Finished");
             gameOverUI.gameObject.SetActive(true);
@@ -110,7 +118,7 @@ public class GameManager : MonoBehaviour
         levelCompleteUI.gameObject.SetActive(false);
         fireball.nextEvent.RemoveAllListeners();
         currentLevel++;
-        Destroy(currentLevelGameObject);
+        ClearLevel();
         CreateLevel();
         gameUI.AddScore();
     }
@@ -144,7 +152,15 @@ public class GameManager : MonoBehaviour
         introUI.SetActive(true);
         gameUI.gameObject.SetActive(false);
         levelCompleteUI.gameObject.SetActive(false);
-        Destroy(currentLevelGameObject);
+        ClearLevel();
+    }
+
+    private void ClearLevel()
+    {
+        if (currentLevelGameObject)
+        {
+            Destroy(currentLevelGameObject);
+        }
     }
 
     void CreateLevel()
@@ -152,8 +168,7 @@ public class GameManager : MonoBehaviour
         time = Time.realtimeSinceStartup;
         Debug.Log("Creeating level");
 
-        if (currentLevelGameObject)
-            GameObject.Destroy(currentLevelGameObject);
+        ClearLevel();
 
         currentLevelGameObject = new GameObject("CurrentLevel");
         LevelData levelData = _Levels[currentLevel - 1].GetComponent<LevelData>();
@@ -196,6 +211,12 @@ public class GameManager : MonoBehaviour
 
     public void LoginOrRegister()
     {
+        if(devMode)
+        {
+            StartGame();
+            return;
+        }
+
         if (registerSigninUI.canLogin())
         {
             registerSigninUI.Login();
@@ -229,13 +250,20 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         // Wait until you show the levels...
-        PlayFabManager.instance.GetLevelsInfo(DisplayLevel);
+        if (devMode)
+        {
+            DisplayLevel(null, new int[20]);
+        }
+        else
+        {
+            PlayFabManager.instance.GetLevelsInfo(DisplayLevel);
+        }
 	}
 
-    private void DisplayLevel(object obj, int [] levels)
+    private void DisplayLevel(object obj, int [] lvls)
     {
-        levelUI.Init(levels);
-        this.levels = levels;
+        levelUI.Init(lvls);
+        levels = lvls;
         ShowLevel();
     }
 }

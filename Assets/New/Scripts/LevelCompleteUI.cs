@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class LevelCompleteUI : MonoBehaviour
 {
     public Text levelCompleted;
-    public Text message;
+    public Text score;
     public Button levelButton;
     public Button quitButton;
     public GameManager gameManager;
+    public Image[] stars;
 
     // Start is called before the first frame update
     void Start()
@@ -23,21 +24,27 @@ public class LevelCompleteUI : MonoBehaviour
         
     }
 
-    public void Show(bool outOfTime)
+    public void Show(bool outOfTime, int starsEarned = -1, int levelScore = 0)
     {
         levelCompleted.text = outOfTime ? "You ran out of time" : "Level Complete";
-        message.text = outOfTime ? "Stars = 0" : "Stars = 3";
         gameObject.SetActive(true);
 
         Text buttonText = levelButton.GetComponentInChildren<Text>();
-        buttonText.text = outOfTime ? "Play Again" : "Next Level";
+        buttonText.text = outOfTime ? "Retry" : "Next";
         gameManager.LevelOver();
+
+        for(int i=0;i<3;i++)
+        {
+            stars[i].enabled = i <= starsEarned;
+        }
+
+        score.text = levelScore.ToString();
     }
 
     public void PlayAgain()
     {
         Text buttonText = levelButton.GetComponentInChildren<Text>();
-        if (buttonText.text == "Play Again")
+        if (buttonText.text == "Retry")
             gameManager.Retry();
         else
             gameManager.NextLevel();

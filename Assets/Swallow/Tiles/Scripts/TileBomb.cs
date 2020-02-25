@@ -34,7 +34,15 @@ public class TileBomb : Tile
 		mBombCount++;
 	}
 
-	public override void UpdateCustomData ()
+    public override void LevelComplete()
+    {
+        base.LevelComplete();
+
+        mTickingAudioSource.Stop();
+        Debug.Log("Finished Bom " + isDone);
+    }
+
+    public override void UpdateCustomData ()
 	{
 		base.UpdateCustomData ();
 		
@@ -51,7 +59,7 @@ public class TileBomb : Tile
 
 	void Update()
 	{
-		if(Application.loadedLevelName == "LevelEditor" || !mRenderer.enabled)
+		if(Application.loadedLevelName == "LevelEditor" || !mRenderer.enabled || isDone)
 			return;
 
 		float elapsedTime = (Time.realtimeSinceStartup - mTime);
